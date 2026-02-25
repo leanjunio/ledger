@@ -2,7 +2,8 @@ use crate::markdown;
 use serde::Serialize;
 use std::collections::HashSet;
 use std::path::Path;
-use std::sync::Mutex;
+use std::sync::{Mutex, PoisonError};
+use tauri::State;
 
 use super::vault::VaultState;
 
@@ -49,7 +50,9 @@ pub fn query_by_tag(
     paths: Option<Vec<String>>,
     state: State<'_, Mutex<VaultState>>,
 ) -> Result<Vec<QueryResultItem>, String> {
-    let vault = state.lock().map_err(|e| e.to_string())?;
+    let vault = state
+        .lock()
+        .map_err(|e: PoisonError<_>| e.to_string())?;
     let root_path = vault
         .root_path
         .as_ref()
@@ -69,7 +72,7 @@ pub fn query_by_tag(
             Err(_) => continue,
         };
         let nodes = markdown::parse_list_items(&content);
-        for node in nodes {
+        for node in &nodes {
             let has_tag = node.tags.iter().any(|t| tag_set.contains(t));
             if !has_tag {
                 continue;
@@ -83,7 +86,7 @@ pub fn query_by_tag(
             results.push(QueryResultItem {
                 file_path: rel_path.clone(),
                 parent_path: parent_path_str,
-                node,
+                node: node.clone(),
             });
         }
     }

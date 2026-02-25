@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 
 const SESSION_FILENAME: &str = "config.json";
 
@@ -16,8 +16,8 @@ fn session_path(app: &AppHandle) -> Result<PathBuf, String> {
     let dir = app
         .path()
         .app_data_dir()
-        .map_err(|e| e.to_string())?;
-    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        .map_err(|e: tauri::Error| e.to_string())?;
+    fs::create_dir_all(&dir).map_err(|e: std::io::Error| e.to_string())?;
     Ok(dir.join(SESSION_FILENAME))
 }
 

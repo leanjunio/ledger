@@ -3,7 +3,8 @@
 
 use serde::Serialize;
 use std::path::Path;
-use std::sync::Mutex;
+use std::sync::{Mutex, PoisonError};
+use tauri::State;
 
 use super::vault::VaultState;
 
@@ -25,7 +26,9 @@ pub fn search_full_text(
     fuzzy: Option<bool>,
     state: State<'_, Mutex<VaultState>>,
 ) -> Result<Vec<SearchMatch>, String> {
-    let vault = state.lock().map_err(|e| e.to_string())?;
+    let vault = state
+        .lock()
+        .map_err(|e: PoisonError<_>| e.to_string())?;
     let root_path = vault
         .root_path
         .as_ref()

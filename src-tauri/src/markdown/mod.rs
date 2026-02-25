@@ -1,7 +1,7 @@
 //! Parse markdown list items into a tree of nodes (depth, text, tags, parent/child).
 //! Uses pulldown-cmark; list nesting gives depth. Tags: `#[\w-]+` in list item text.
 
-use pulldown_cmark::{Event, Parser, Tag, TagEnd};
+use pulldown_cmark::{Event, Parser, Tag};
 use regex::Regex;
 use serde::Serialize;
 
@@ -39,13 +39,13 @@ pub fn parse_list_items(content: &str) -> Vec<TreeNode> {
             Event::Start(Tag::List(_)) => {
                 list_depth = list_depth.saturating_add(1);
             }
-            Event::End(TagEnd::List(_)) => {
+            Event::End(Tag::List(_)) => {
                 list_depth = list_depth.saturating_sub(1);
             }
             Event::Start(Tag::Item) => {
                 current_text.clear();
             }
-            Event::End(TagEnd::Item) => {
+            Event::End(Tag::Item) => {
                 let text = current_text.trim().to_string();
                 if text.is_empty() {
                     continue;
