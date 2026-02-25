@@ -14,7 +14,11 @@ pub use commands::vault::open_vault_impl;
 pub fn run() {
     tauri::Builder::default()
         .manage(Mutex::new(VaultState::default()))
-        .invoke_handler(tauri::generate_handler![commands::open_vault])
+        .invoke_handler(tauri::generate_handler![
+            commands::open_vault,
+            commands::get_session,
+            commands::save_session,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
