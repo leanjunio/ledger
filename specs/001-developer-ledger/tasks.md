@@ -25,11 +25,11 @@
 
 **Purpose**: Project initialization and research lock-in so the executor does not guess libraries or versions.
 
-- [ ] T001 Resolve all TBDs in research.md: replace every "TBD" or "or similar" with exact crate/package name and version; add "Wrong sources" reminder at top of research.md per plan Phase 0
-- [ ] T002 Scaffold Tauri project from repo root: run official Tauri v2 create flow (Rust + TypeScript/Vite), or confirm existing src-tauri/ and src/ exist; ensure npm run tauri dev opens a window (see plan Phase 1)
-- [ ] T003 Add Rust dependencies to src-tauri/Cargo.toml per research.md: pulldown-cmark (0.9.x), fuzzy-matcher (0.1.x), tracing, tracing-subscriber, serde_json if not present
-- [ ] T004 [P] Configure Rust linting and formatting in src-tauri/ (e.g. rustfmt.toml or CI); run cargo fmt and cargo clippy from src-tauri/
-- [ ] T005 [P] Configure frontend lint/format in src/ (e.g. ESLint, Prettier) if the Tauri template did not; ensure npm run build succeeds from repo root
+- [X] T001 Resolve all TBDs in research.md: replace every "TBD" or "or similar" with exact crate/package name and version; add "Wrong sources" reminder at top of research.md per plan Phase 0
+- [X] T002 Scaffold Tauri project from repo root: run official Tauri v2 create flow (Rust + TypeScript/Vite), or confirm existing src-tauri/ and src/ exist; ensure npm run tauri dev opens a window (see plan Phase 1)
+- [X] T003 Add Rust dependencies to src-tauri/Cargo.toml per research.md: pulldown-cmark (0.9.x), fuzzy-matcher (0.1.x), tracing, tracing-subscriber, serde_json if not present
+- [X] T004 [P] Configure Rust linting and formatting in src-tauri/ (e.g. rustfmt.toml or CI); run cargo fmt and cargo clippy from src-tauri/
+- [X] T005 [P] Configure frontend lint/format in src/ (e.g. ESLint, Prettier) if the Tauri template did not; ensure npm run build succeeds from repo root
 
 ---
 
@@ -39,12 +39,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T006 Implement open_vault(path) in src-tauri/src/commands/ (or commands/vault.rs): validate path is directory, collect all .md paths under it, return { root_path, file_paths }; register command in src-tauri/src/lib.rs
-- [ ] T007 Implement get_session and save_session in src-tauri/src/commands/ (or commands/session.rs): read/write JSON config in app data dir per research.md; use Tauri path resolver for app data path; register both commands
-- [ ] T008 Store current vault root_path and file_paths in backend state (e.g. AppState in src-tauri/src/lib.rs or managed state) so list_files and file CRUD can use it
-- [ ] T009 Add integration test in tests/integration/: create temp dir with two .md files, call open_vault(temp_dir), assert root_path and file_paths length 2; run cargo test
-- [ ] T010 In frontend src/: add UI to trigger "Open vault" (e.g. menu or button), use Tauri dialog or invoke to get folder path, call invoke('open_vault', { path }), store root_path and file_paths in frontend state
-- [ ] T011 In frontend src/: render file tree (sidebar or main area) from file_paths; on file click store selected path in state (content loads in Phase 3 when read_file is implemented in T014/T018); ensure "last opened file or empty screen" works per FR-011 (load session on startup, open last vault/file if valid; show empty editor or placeholder until read_file exists)
+- [X] T006 Implement open_vault(path) in src-tauri/src/commands/ (or commands/vault.rs): validate path is directory, collect all .md paths under it, return { root_path, file_paths }; register command in src-tauri/src/lib.rs
+- [X] T007 Implement get_session and save_session in src-tauri/src/commands/ (or commands/session.rs): read/write JSON config in app data dir per research.md; use Tauri path resolver for app data path; register both commands
+- [X] T008 Store current vault root_path and file_paths in backend state (e.g. AppState in src-tauri/src/lib.rs or managed state) so list_files and file CRUD can use it
+- [X] T009 Add integration test in tests/integration/: create temp dir with two .md files, call open_vault(temp_dir), assert root_path and file_paths length 2; run cargo test
+- [X] T010 In frontend src/: add UI to trigger "Open vault" (e.g. menu or button), use Tauri dialog or invoke to get folder path, call invoke('open_vault', { path }), store root_path and file_paths in frontend state
+- [X] T011 In frontend src/: render file tree (sidebar or main area) from file_paths; on file click store selected path in state (content loads in Phase 3 when read_file is implemented in T014/T018); ensure "last opened file or empty screen" works per FR-011 (load session on startup, open last vault/file if valid; show empty editor or placeholder until read_file exists)
 
 **Checkpoint**: Open vault → file list appears; session save/load works. Run cargo test; manual: open vault, see files.
 
@@ -58,18 +58,18 @@
 
 ### Tests for User Story 1
 
-- [ ] T012 [P] [US1] Add integration test in tests/integration/test_file_crud.rs (or .ts): create_file("t.md"), read_file("t.md") returns empty string; write_file("t.md", "hi"), read_file("t.md") returns "hi"; delete_file("t.md"), read_file("t.md") errors; run cargo test
+- [X] T012 [P] [US1] Add integration test in tests/integration/test_file_crud.rs (or .ts): create_file("t.md"), read_file("t.md") returns empty string; write_file("t.md", "hi"), read_file("t.md") returns "hi"; delete_file("t.md"), read_file("t.md") errors; run cargo test
 
 ### Implementation for User Story 1
 
-- [ ] T013 Implement list_files in src-tauri/src/commands/: return current vault's file_paths from state; register command
-- [ ] T014 Implement read_file(path) in src-tauri/src/commands/: validate path under vault root, read file, return content string; register command
-- [ ] T015 Implement write_file(path, content) in src-tauri/src/commands/: validate path under vault root, write content; register command
-- [ ] T016 Implement create_file(path) in src-tauri/src/commands/: create empty file at path under vault; register command
-- [ ] T017 Implement delete_file(path) in src-tauri/src/commands/: validate path under vault root, delete file; register command
-- [ ] T018 [US1] In frontend src/: wire file tree so clicking a path calls invoke('read_file', { path }) and displays content in editor; add Save button that calls invoke('write_file', { path, content }) with current editor content
-- [ ] T019 [US1] In frontend src/: add Create file (e.g. prompt for name), call create_file, refresh file list (list_files or re-open vault); add Delete file with confirmation, call delete_file, refresh file list
-- [ ] T020 [US1] Run cargo test; manually verify create/open/edit/save/delete and tree update (quickstart validation rows 1–2)
+- [X] T013 Implement list_files in src-tauri/src/commands/: return current vault's file_paths from state; register command
+- [X] T014 Implement read_file(path) in src-tauri/src/commands/: validate path under vault root, read file, return content string; register command
+- [X] T015 Implement write_file(path, content) in src-tauri/src/commands/: validate path under vault root, write content; register command
+- [X] T016 Implement create_file(path) in src-tauri/src/commands/: create empty file at path under vault; register command
+- [X] T017 Implement delete_file(path) in src-tauri/src/commands/: validate path under vault root, delete file; register command
+- [X] T018 [US1] In frontend src/: wire file tree so clicking a path calls invoke('read_file', { path }) and displays content in editor; add Save button that calls invoke('write_file', { path, content }) with current editor content
+- [X] T019 [US1] In frontend src/: add Create file (e.g. prompt for name), call create_file, refresh file list (list_files or re-open vault); add Delete file with confirmation, call delete_file, refresh file list
+- [X] T020 [US1] Run cargo test; manually verify create/open/edit/save/delete and tree update (quickstart validation rows 1–2)
 
 **Checkpoint**: User Story 1 complete. File CRUD and tree work; tests pass.
 
@@ -83,14 +83,14 @@
 
 ### Tests for User Story 2
 
-- [ ] T021 [P] [US2] Add unit test in src-tauri/src/markdown/ or tests/: parse content "- a\n  - b" → two nodes, depth 0 and 1, second's parent_id equals first's id; parse line with "#decision" → one node with tags containing "decision"; run cargo test
+- [X] T021 [P] [US2] Add unit test in src-tauri/src/markdown/ or tests/: parse content "- a\n  - b" → two nodes, depth 0 and 1, second's parent_id equals first's id; parse line with "#decision" → one node with tags containing "decision"; run cargo test
 
 ### Implementation for User Story 2
 
-- [ ] T022 [US2] Add markdown parsing module in src-tauri/src/markdown/mod.rs: use pulldown-cmark per research.md, walk events to build list of tree nodes (id, depth, text, tags, parent_id, children_ids); extract tags from text with pattern #[\w-]+
-- [ ] T023 [US2] Implement parse_file(path, content) command in src-tauri/src/commands/: call parser with content, return { nodes: TreeNode[] }; register command; ensure TreeNode shape matches contracts/tauri-commands.md
-- [ ] T024 [US2] In frontend src/: when a file is open, call invoke('parse_file', { path, content }) with current editor content; render outline or hierarchy (e.g. indent by depth, expand/collapse); on save, write back raw editor content (do not regenerate markdown from nodes)
-- [ ] T025 [US2] Run cargo test; manually verify nested list and structure preserved (quickstart validation row 3)
+- [X] T022 [US2] Add markdown parsing module in src-tauri/src/markdown/mod.rs: use pulldown-cmark per research.md, walk events to build list of tree nodes (id, depth, text, tags, parent_id, children_ids); extract tags from text with pattern #[\w-]+
+- [X] T023 [US2] Implement parse_file(path, content) command in src-tauri/src/commands/: call parser with content, return { nodes: TreeNode[] }; register command; ensure TreeNode shape matches contracts/tauri-commands.md
+- [X] T024 [US2] In frontend src/: when a file is open, call invoke('parse_file', { path, content }) with current editor content; render outline or hierarchy (e.g. indent by depth, expand/collapse); on save, write back raw editor content (do not regenerate markdown from nodes)
+- [X] T025 [US2] Run cargo test; manually verify nested list and structure preserved (quickstart validation row 3)
 
 **Checkpoint**: User Story 2 complete. List hierarchy parses and displays; save preserves structure.
 
@@ -104,13 +104,13 @@
 
 ### Tests for User Story 3
 
-- [ ] T026 [P] [US3] Add test: parse "- Do it #decision #ci" → one node with tags ["decision","ci"]; run cargo test
+- [X] T026 [P] [US3] Add test: parse "- Do it #decision #ci" → one node with tags ["decision","ci"]; run cargo test
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Ensure parser in src-tauri/src/markdown/ extracts tags into node.tags (already in T022; if not, add); no separate tag storage
-- [ ] T028 [US3] In frontend src/: display tags in hierarchy/outline (e.g. badge or inline next to list item text); ensure editing list item text (including #tag) persists on save via write_file
-- [ ] T029 [US3] Run cargo test; manually verify add/edit/remove tag in list item and persistence (quickstart validation row 4)
+- [X] T027 [US3] Ensure parser in src-tauri/src/markdown/ extracts tags into node.tags (already in T022; if not, add); no separate tag storage
+- [X] T028 [US3] In frontend src/: display tags in hierarchy/outline (e.g. badge or inline next to list item text); ensure editing list item text (including #tag) persists on save via write_file
+- [X] T029 [US3] Run cargo test; manually verify add/edit/remove tag in list item and persistence (quickstart validation row 4)
 
 **Checkpoint**: User Story 3 complete. Tags visible and persisted in file content.
 
@@ -124,15 +124,15 @@
 
 ### Tests for User Story 4
 
-- [ ] T030 [P] [US4] Add integration test: create two files each with one list item containing #decision; invoke query_by_tag(["decision"]) → two QueryResultItem; run cargo test
-- [ ] T031 [P] [US4] Add integration test: write_file("x.md", "hello world"); search_full_text("hello") → at least one SearchMatch with file_path containing x.md and snippet containing "hello"; run cargo test
+- [X] T030 [P] [US4] Add integration test: create two files each with one list item containing #decision; invoke query_by_tag(["decision"]) → two QueryResultItem; run cargo test
+- [X] T031 [P] [US4] Add integration test: write_file("x.md", "hello world"); search_full_text("hello") → at least one SearchMatch with file_path containing x.md and snippet containing "hello"; run cargo test
 
 ### Implementation for User Story 4
 
-- [ ] T032 [US4] Implement query_by_tag(tag_names, scope_node_id?, paths?) in src-tauri/src/commands/ (or search/): for each file in vault (or paths), read content, parse to nodes, filter nodes with at least one tag in tag_names; if scope set, filter to descendants; return QueryResultItem[] (file_path, parent_path, node); register command
-- [ ] T033 [US4] Implement search_full_text(query, paths?, fuzzy?) in src-tauri/src/commands/ (or search/): scan file contents, substring match (and fuzzy if true per research.md); return SearchMatch[]; limit results (e.g. 100); register command
-- [ ] T034 [US4] In frontend src/: add Query view (input for tag, optional scope); on submit call query_by_tag; display results (file_path, parent_path, node text); on item click call read_file(file_path) and open in editor, optionally scroll/focus to node
-- [ ] T035 [US4] In frontend src/: add Search UI (input for text, optional fuzzy); on submit call search_full_text; display matches; on click open file (and optional offset); run cargo test; manually verify query and search (quickstart validation rows 5–6)
+- [X] T032 [US4] Implement query_by_tag(tag_names, scope_node_id?, paths?) in src-tauri/src/commands/ (or search/): for each file in vault (or paths), read content, parse to nodes, filter nodes with at least one tag in tag_names; if scope set, filter to descendants; return QueryResultItem[] (file_path, parent_path, node); register command
+- [X] T033 [US4] Implement search_full_text(query, paths?, fuzzy?) in src-tauri/src/commands/ (or search/): scan file contents, substring match (and fuzzy if true per research.md); return SearchMatch[]; limit results (e.g. 100); register command
+- [X] T034 [US4] In frontend src/: add Query view (input for tag, optional scope); on submit call query_by_tag; display results (file_path, parent_path, node text); on item click call read_file(file_path) and open in editor, optionally scroll/focus to node
+- [X] T035 [US4] In frontend src/: add Search UI (input for text, optional fuzzy); on submit call search_full_text; display matches; on click open file (and optional offset); run cargo test; manually verify query and search (quickstart validation rows 5–6)
 
 **Checkpoint**: User Story 4 complete. Query by tag and full-text search work; navigate to item.
 
@@ -142,14 +142,14 @@
 
 **Purpose**: Undo/redo, session restore, theme, logging, copy-paste per FR-009, FR-010, FR-011, FR-012, FR-013.
 
-- [ ] T036 Implement undo/redo in frontend src/: history stack (e.g. array of document states or diffs) for current file; Undo/Redo buttons or shortcuts; clear or keep history on file close per plan; no backend call per keystroke
-- [ ] T037 Ensure session restore on startup: load get_session; if last_vault_path and last_file_path valid, call open_vault and read_file; else show empty screen or vault picker (FR-011)
-- [ ] T038 [P] Add theme UI in frontend src/: light/dark/system; store in save_session; load from get_session on startup; apply CSS/class to root (FR-012)
-- [ ] T039 Configure tracing in src-tauri/src/main.rs or lib.rs: tracing-subscriber, log file in app data dir per research.md; add log_from_frontend(level, message, payload?) command that emits tracing event; ensure no remote logging (FR-010)
-- [ ] T040 Ensure editor in frontend src/ allows copy and paste (no preventDefault on paste/copy); verify with quickstart validation row 11 (FR-013)
-- [ ] T041 [P] Ensure primary actions (open vault, save, open file, query, search) have keyboard shortcuts; verify keyboard-only navigation for file tree and editor per spec (accessibility / Obsidian-like expectations)
-- [ ] T042 Document performance-critical paths (tree render, query_by_tag, search_full_text) in plan or code comments; add manual check or smoke test for 100+ items and search &lt;2s per plan and constitution IV
-- [ ] T043 Run full quickstart.md validation checklist (rows 1–11); fix any failing row; run cargo test
+- [X] T036 Implement undo/redo in frontend src/: history stack (e.g. array of document states or diffs) for current file; Undo/Redo buttons or shortcuts; clear or keep history on file close per plan; no backend call per keystroke
+- [X] T037 Ensure session restore on startup: load get_session; if last_vault_path and last_file_path valid, call open_vault and read_file; else show empty screen or vault picker (FR-011)
+- [X] T038 [P] Add theme UI in frontend src/: light/dark/system; store in save_session; load from get_session on startup; apply CSS/class to root (FR-012)
+- [X] T039 Configure tracing in src-tauri/src/main.rs or lib.rs: tracing-subscriber, log file in app data dir per research.md; add log_from_frontend(level, message, payload?) command that emits tracing event; ensure no remote logging (FR-010)
+- [X] T040 Ensure editor in frontend src/ allows copy and paste (no preventDefault on paste/copy); verify with quickstart validation row 11 (FR-013)
+- [X] T041 [P] Ensure primary actions (open vault, save, open file, query, search) have keyboard shortcuts; verify keyboard-only navigation for file tree and editor per spec (accessibility / Obsidian-like expectations)
+- [X] T042 Document performance-critical paths (tree render, query_by_tag, search_full_text) in plan or code comments; add manual check or smoke test for 100+ items and search &lt;2s per plan and constitution IV
+- [X] T043 Run full quickstart.md validation checklist (rows 1–11); fix any failing row; run cargo test
 
 ---
 
