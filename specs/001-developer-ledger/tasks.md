@@ -44,7 +44,7 @@
 - [ ] T008 Store current vault root_path and file_paths in backend state (e.g. AppState in src-tauri/src/lib.rs or managed state) so list_files and file CRUD can use it
 - [ ] T009 Add integration test in tests/integration/: create temp dir with two .md files, call open_vault(temp_dir), assert root_path and file_paths length 2; run cargo test
 - [ ] T010 In frontend src/: add UI to trigger "Open vault" (e.g. menu or button), use Tauri dialog or invoke to get folder path, call invoke('open_vault', { path }), store root_path and file_paths in frontend state
-- [ ] T011 In frontend src/: render file tree (sidebar or main area) from file_paths; on file click call read_file (implement stub or T012) and show content in editor area; ensure "last opened file or empty screen" works per FR-011 (load session on startup, open last vault/file if valid)
+- [ ] T011 In frontend src/: render file tree (sidebar or main area) from file_paths; on file click store selected path in state (content loads in Phase 3 when read_file is implemented in T014/T018); ensure "last opened file or empty screen" works per FR-011 (load session on startup, open last vault/file if valid; show empty editor or placeholder until read_file exists)
 
 **Checkpoint**: Open vault → file list appears; session save/load works. Run cargo test; manual: open vault, see files.
 
@@ -147,7 +147,9 @@
 - [ ] T038 [P] Add theme UI in frontend src/: light/dark/system; store in save_session; load from get_session on startup; apply CSS/class to root (FR-012)
 - [ ] T039 Configure tracing in src-tauri/src/main.rs or lib.rs: tracing-subscriber, log file in app data dir per research.md; add log_from_frontend(level, message, payload?) command that emits tracing event; ensure no remote logging (FR-010)
 - [ ] T040 Ensure editor in frontend src/ allows copy and paste (no preventDefault on paste/copy); verify with quickstart validation row 11 (FR-013)
-- [ ] T041 Run full quickstart.md validation checklist (rows 1–11); fix any failing row; run cargo test
+- [ ] T041 [P] Ensure primary actions (open vault, save, open file, query, search) have keyboard shortcuts; verify keyboard-only navigation for file tree and editor per spec (accessibility / Obsidian-like expectations)
+- [ ] T042 Document performance-critical paths (tree render, query_by_tag, search_full_text) in plan or code comments; add manual check or smoke test for 100+ items and search &lt;2s per plan and constitution IV
+- [ ] T043 Run full quickstart.md validation checklist (rows 1–11); fix any failing row; run cargo test
 
 ---
 
@@ -181,7 +183,7 @@
 - T004, T005 (Setup lint/format) can run in parallel.
 - T012, T021, T026, T030, T031 (test tasks) can be written in parallel with implementation in same phase.
 - T022 (parser) and T024 (frontend outline) can be done in parallel after T023 (parse_file command) exists.
-- T036, T038, T039, T040 (Polish) can be done in parallel except T037 (session) which ties to T007/T011.
+- T036, T038, T039, T040, T041 (Polish) can be done in parallel except T037 (session) and T042 (performance doc/check); T043 is final validation.
 
 ---
 
@@ -203,7 +205,7 @@
 4. US3 → Tags display and persist.
 5. US4 → Query and search.
 6. Polish → Undo, theme, logging, copy-paste.
-7. Run full quickstart validation.
+7. Run full quickstart validation (T043).
 
 ### Parallel Team Strategy
 
@@ -214,7 +216,7 @@
 
 ## Notes
 
-- Every task has a checkbox, task ID (T001–T041), and [Story] label where applicable; file paths are in the description.
+- Every task has a checkbox, task ID (T001–T043), and [Story] label where applicable; file paths are in the description.
 - [P] = parallelizable within the phase (different files or test files).
 - Validate after each phase using plan Validation and quickstart checklist.
 - Constitution: tests required; run cargo test and ensure tests fail before implementation then pass after where TDD is applied.
