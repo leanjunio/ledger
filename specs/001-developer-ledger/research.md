@@ -3,6 +3,8 @@
 **Branch**: `001-developer-ledger` | **Date**: 2025-02-24  
 **Executor**: Read [execution-principles.md](./execution-principles.md) first. This document locks in exact technology choices so you do not substitute other libraries or versions without updating this file.
 
+When looking up libraries, use only the official docs for these exact crate/package names and versions. Do not use Tauri v1 docs or random tutorials. See execution-principles.md.
+
 ---
 
 ## Purpose
@@ -62,7 +64,7 @@ Research answers "which exact library or version do we use?" for every technical
 
 **What NOT to use**: Tantivy or other full-text search engines for MVP (overkill). Do not use a different fuzzy crate without updating this section and the plan.
 
-**Validation**: Integration test: create a file with the line "hello world"; search "hello" → at least one match with that file path and a snippet containing "hello". Fuzzy: search "hlowrld" or similar may match "hello world" if the crate supports it; document expected behavior in a test.
+**Validation**: Integration test: create a file with the line "hello world"; search "hello" → at least one match with that file path and a snippet containing "hello". Fuzzy: a query such as "hlowrld" may match "hello world" when fuzzy matching is enabled (fuzzy-matcher behavior); document expected behavior in a test.
 
 ---
 
