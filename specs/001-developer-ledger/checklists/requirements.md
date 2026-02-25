@@ -2,7 +2,8 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning  
 **Created**: 2025-02-24  
-**Feature**: [spec.md](../spec.md)
+**Feature**: [spec.md](../spec.md)  
+**Requirement-to-verification mapping**: See [requirements-traceability.md](requirements-traceability.md)
 
 ## Content Quality
 
