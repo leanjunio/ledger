@@ -39,15 +39,19 @@ describe("Outline", () => {
       {
         id: 1,
         depth: 0,
-        text: "Project A #decision",
+        text: "Project A",
         tags: ["decision"],
         parent_id: null,
         children_ids: [],
       },
     ];
 
-    render(<Outline nodes={nodes} />);
-    expect(screen.getByText("#decision")).toBeInTheDocument();
+    const { container } = render(<Outline nodes={nodes} />);
+    const nodeEl = container.querySelector(".node");
+    const tagsEl = nodeEl?.querySelector(".tags");
+
+    expect(tagsEl).not.toBeNull();
+    expect(tagsEl).toHaveTextContent("#decision");
   });
 
   it("applies correct indentation based on depth", () => {
@@ -71,9 +75,9 @@ describe("Outline", () => {
     ];
 
     const { container } = render(<Outline nodes={nodes} />);
-    const nodes_els = container.querySelectorAll(".node");
-    expect(nodes_els[0]).toHaveStyle("paddingLeft: 0em");
-    expect(nodes_els[1]).toHaveStyle("paddingLeft: 3em");
+    const nodeEls = container.querySelectorAll(".node");
+    expect(nodeEls[0]).toHaveStyle({ paddingLeft: "0em" });
+    expect(nodeEls[1]).toHaveStyle({ paddingLeft: "3em" });
   });
 
   it("displays multiple tags on a node", () => {
@@ -81,7 +85,7 @@ describe("Outline", () => {
       {
         id: 1,
         depth: 0,
-        text: "Item with tags #decision #ci",
+        text: "Item with tags",
         tags: ["decision", "ci"],
         parent_id: null,
         children_ids: [],

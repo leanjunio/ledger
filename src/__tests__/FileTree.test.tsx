@@ -5,9 +5,10 @@ import FileTree from "../components/FileTree";
 import { AppContext } from "../components/AppShell";
 import { initialAppState } from "../appState";
 
-// Mock tauriClient
 vi.mock("../tauriClient", () => ({
   selectFolder: vi.fn(),
+  createFile: vi.fn(),
+  deleteFile: vi.fn(),
 }));
 
 const mockContextValue = {
@@ -20,11 +21,11 @@ describe("FileTree", () => {
     render(
       <AppContext.Provider value={mockContextValue}>
         <FileTree
-          filePaths={["note1.md", "note2.md"]}
-          selectedPath="note1.md"
-          onSelectFile={vi.fn()}
-          onOpenVault={vi.fn()}
-          onRefreshList={vi.fn()}
+          filePaths={["vault/note1.md", "vault/note2.md"]}
+          selectedPath="vault/note1.md"
+          onSelectFile={vi.fn().mockResolvedValue(undefined)}
+          onOpenVault={vi.fn().mockResolvedValue(undefined)}
+          onRefreshList={vi.fn().mockResolvedValue(undefined)}
         />
       </AppContext.Provider>
     );
@@ -33,41 +34,41 @@ describe("FileTree", () => {
     expect(screen.getByText("note2.md")).toBeInTheDocument();
   });
 
-  it("highlights selected file", () => {
+  it("highlights the selected file", () => {
     render(
       <AppContext.Provider value={mockContextValue}>
         <FileTree
-          filePaths={["note1.md", "note2.md"]}
-          selectedPath="note1.md"
-          onSelectFile={vi.fn()}
-          onOpenVault={vi.fn()}
-          onRefreshList={vi.fn()}
+          filePaths={["vault/note1.md", "vault/note2.md"]}
+          selectedPath="vault/note2.md"
+          onSelectFile={vi.fn().mockResolvedValue(undefined)}
+          onOpenVault={vi.fn().mockResolvedValue(undefined)}
+          onRefreshList={vi.fn().mockResolvedValue(undefined)}
         />
       </AppContext.Provider>
     );
 
-    const link = screen.getByText("note1.md");
+    const link = screen.getByText("note2.md");
     expect(link).toHaveClass("selected");
   });
 
   it("calls onSelectFile when a file is clicked", async () => {
-    const mockSelect = vi.fn();
     const user = userEvent.setup();
+    const onSelectFile = vi.fn().mockResolvedValue(undefined);
 
     render(
       <AppContext.Provider value={mockContextValue}>
         <FileTree
-          filePaths={["note1.md", "note2.md"]}
+          filePaths={["vault/note1.md", "vault/note2.md"]}
           selectedPath={null}
-          onSelectFile={mockSelect}
-          onOpenVault={vi.fn()}
-          onRefreshList={vi.fn()}
+          onSelectFile={onSelectFile}
+          onOpenVault={vi.fn().mockResolvedValue(undefined)}
+          onRefreshList={vi.fn().mockResolvedValue(undefined)}
         />
       </AppContext.Provider>
     );
 
     await user.click(screen.getByText("note1.md"));
-    expect(mockSelect).toHaveBeenCalledWith("note1.md");
+    expect(onSelectFile).toHaveBeenCalledWith("vault/note1.md");
   });
 
   it("shows empty state when no files", () => {
@@ -76,9 +77,9 @@ describe("FileTree", () => {
         <FileTree
           filePaths={[]}
           selectedPath={null}
-          onSelectFile={vi.fn()}
-          onOpenVault={vi.fn()}
-          onRefreshList={vi.fn()}
+          onSelectFile={vi.fn().mockResolvedValue(undefined)}
+          onOpenVault={vi.fn().mockResolvedValue(undefined)}
+          onRefreshList={vi.fn().mockResolvedValue(undefined)}
         />
       </AppContext.Provider>
     );
@@ -92,9 +93,9 @@ describe("FileTree", () => {
         <FileTree
           filePaths={[]}
           selectedPath={null}
-          onSelectFile={vi.fn()}
-          onOpenVault={vi.fn()}
-          onRefreshList={vi.fn()}
+          onSelectFile={vi.fn().mockResolvedValue(undefined)}
+          onOpenVault={vi.fn().mockResolvedValue(undefined)}
+          onRefreshList={vi.fn().mockResolvedValue(undefined)}
         />
       </AppContext.Provider>
     );
@@ -104,3 +105,4 @@ describe("FileTree", () => {
     expect(screen.getByTitle("Create file")).toBeInTheDocument();
   });
 });
+

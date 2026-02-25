@@ -8,5 +8,15 @@ export default defineConfig({
     globals: true,
     css: true,
     setupFiles: ["./src/vitest.setup.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      thresholds: {
+        lines: 60,
+        branches: 50,
+        functions: 50,
+        statements: 60,
+      },
+    },
   },
 });
