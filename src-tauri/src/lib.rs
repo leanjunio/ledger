@@ -28,6 +28,7 @@ pub fn run() {
             commands::delete_file,
             commands::parse_file,
             commands::query_by_tag,
+            commands::search_full_text,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
