@@ -1,0 +1,29 @@
+# ledger Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2026-02-24
+
+## Active Technologies
+
+- Rust (stable, 1.75+), TypeScript (ES2020+ for frontend) + Tauri 2.x, frontend stack (TypeScript; UI framework TBD—vanilla or lightweight framework), markdown parsing (Rust crate TBD in research), fuzzy/search (Rust crate TBD) (001-developer-ledger)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+cargo test [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] cargo clippy
+
+## Code Style
+
+Rust (stable, 1.75+), TypeScript (ES2020+ for frontend): Follow standard conventions
+
+## Recent Changes
+
+- 001-developer-ledger: Added Rust (stable, 1.75+), TypeScript (ES2020+ for frontend) + Tauri 2.x, frontend stack (TypeScript; UI framework TBD—vanilla or lightweight framework), markdown parsing (Rust crate TBD in research), fuzzy/search (Rust crate TBD)
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
