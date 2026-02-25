@@ -59,7 +59,49 @@ async function selectFile(path: string) {
     console.error(err);
   }
   renderEditor();
+  await updateOutline();
   await invoke("save_session", { last_file_path: path });
+}
+
+type TreeNode = {
+  id: number;
+  depth: number;
+  text: string;
+  tags: string[];
+  parent_id: number | null;
+  children_ids: number[];
+};
+
+async function updateOutline() {
+  const outlineEl = getEl<HTMLDivElement>("outline");
+  if (!state.selectedPath || !state.editorContent) {
+    outlineEl.innerHTML = "";
+    return;
+  }
+  try {
+    const result = await invoke<{ nodes: TreeNode[] }>("parse_file", {
+      path: state.selectedPath,
+      content: state.editorContent,
+    });
+    outlineEl.innerHTML = "";
+    for (const node of result.nodes) {
+      const div = document.createElement("div");
+      div.className = "node";
+      div.style.setProperty("--depth", String(node.depth));
+      const textSpan = document.createElement("span");
+      textSpan.textContent = node.text || "(empty)";
+      div.appendChild(textSpan);
+      if (node.tags.length > 0) {
+        const tagSpan = document.createElement("span");
+        tagSpan.className = "tags";
+        tagSpan.textContent = " " + node.tags.map((t) => "#" + t).join(" ");
+        div.appendChild(tagSpan);
+      }
+      outlineEl.appendChild(div);
+    }
+  } catch {
+    outlineEl.innerHTML = "";
+  }
 }
 
 function renderEditor() {
@@ -93,8 +135,18 @@ function renderEditor() {
   textarea.placeholder = "Markdown content...";
   textarea.addEventListener("input", () => {
     state.editorContent = textarea.value;
+    debouncedUpdateOutline();
   });
   editorArea.appendChild(textarea);
+}
+
+let outlineDebounce: ReturnType<typeof setTimeout> | null = null;
+function debouncedUpdateOutline() {
+  if (outlineDebounce) clearTimeout(outlineDebounce);
+  outlineDebounce = setTimeout(() => {
+    outlineDebounce = null;
+    updateOutline();
+  }, 300);
 }
 
 async function saveFile() {
