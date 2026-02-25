@@ -13,6 +13,7 @@ pub use commands::vault::open_vault_impl;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .manage(Mutex::new(VaultState::default()))
         .invoke_handler(tauri::generate_handler![
             commands::open_vault,
