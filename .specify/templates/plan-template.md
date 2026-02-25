@@ -31,7 +31,13 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify alignment with `.specify/memory/constitution.md`:
+
+- **Code quality**: Structure, naming, and conventions support readability and maintainability.
+- **Testing standards**: Plan identifies test types (unit, integration, contract) and test-first approach where required.
+- **User experience consistency**: Terminology and interaction patterns match spec and existing product surface.
+- **Performance requirements**: Technical context includes measurable performance goals and constraints where applicable.
+- **Technical decision governance**: No unjustified violations; exceptions documented in Complexity Tracking below.
 
 ## Project Structure
 

@@ -1,50 +1,91 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+==================
+Version change: (template) → 1.0.0
+Modified principles: N/A (initial adoption from template)
+Added sections: All placeholders filled (Core Principles 1–5, Additional Constraints,
+  Development Workflow, Governance)
+Removed sections: None
+Templates:
+  .specify/templates/plan-template.md ✅ updated (Constitution Check gates)
+  .specify/templates/spec-template.md ✅ no change required
+  .specify/templates/tasks-template.md ✅ no change required (task types already support testing/quality)
+  .cursor/commands/speckit.plan.md ✅ no change required
+  .cursor/commands/speckit.constitution.md ✅ no change required
+  .cursor/commands/speckit.analyze.md ✅ no change required
+Follow-up TODOs: None
+-->
+
+# Ledger Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code quality
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Code MUST be readable, maintainable, and consistent with the rest of the codebase. Non-negotiable rules:
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- Naming, formatting, and structure MUST follow project conventions (linters and formatters enforced).
+- Public APIs and modules MUST have clear contracts and minimal surface area; complexity MUST be justified.
+- Refactors that improve clarity are encouraged; style-only churn is avoided.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Rationale: Quality reduces defects and onboarding cost and keeps the system evolvable.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### II. Testing standards
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+Testing MUST provide confidence that behavior matches requirements and that changes do not regress behavior.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- Every feature or contract change MUST have tests that can fail before implementation and pass after.
+- Unit tests cover logic and boundaries; integration or contract tests cover cross-component behavior where the spec or constitution require it.
+- Tests MUST be deterministic, fast where possible, and free of hidden dependencies.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Rationale: Testable behavior is designable behavior; tests document and guard intended use.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### III. User experience consistency
+
+User-facing behavior and interfaces MUST be consistent, predictable, and aligned with stated scope.
+
+- Terminology, interaction patterns, and error handling MUST be consistent across the product surface covered by the spec.
+- Accessibility and usability requirements stated in the spec or in project standards MUST be met.
+- Breaking changes to user-facing contracts require explicit approval and, where applicable, migration or versioning.
+
+Rationale: Consistency reduces cognitive load and support burden and builds trust.
+
+### IV. Performance requirements
+
+Performance MUST meet the criteria defined for the feature or system (e.g., latency, throughput, resource use).
+
+- Specs and plans MUST state measurable performance goals and constraints where they matter.
+- Implementation choices MUST not regress those goals without documented justification and approval.
+- Performance-critical paths MUST be identified and validated (e.g., benchmarks, profiling) when the constitution or spec require it.
+
+Rationale: Predictable performance is part of the product promise and operational viability.
+
+### V. Technical decision governance
+
+Technical decisions and implementation choices MUST be guided by Principles I–IV.
+
+- Proposals (designs, stack choices, refactors) MUST be checked against code quality, testing, UX consistency, and performance.
+- Violations or exceptions MUST be documented with rationale and, where applicable, a path to compliance.
+- Compliance is verified in review and in the Constitution Check phase of planning.
+
+Rationale: Governance ties principles to daily decisions and keeps the system aligned with the constitution.
+
+## Additional constraints
+
+- Technology and dependencies MUST support the principles above (e.g., testability, observability, performance tooling).
+- Security and compliance requirements applicable to the project MUST be satisfied; any conflict with principles is escalated rather than ignored.
+- New dependencies or architectural patterns that affect multiple components require explicit alignment with the constitution and approval.
+
+## Development workflow
+
+- All changes pass through review. Reviewers MUST verify alignment with Principles I–V and the Constitution Check from the implementation plan.
+- Complexity or exception justifications MUST be recorded (e.g., in the plan’s Complexity Tracking table or in the PR).
+- Before release or merge to a mainline, the feature’s success criteria and constitution gates MUST be satisfied or explicitly deferred with an approved follow-up.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution overrides conflicting local or ad-hoc practices. When in doubt, the written principle prevails.
+- Amendments require a version bump (semantic: MAJOR for incompatible principle changes, MINOR for new principles or material guidance, PATCH for clarifications), updated dates, and propagation to dependent templates and commands.
+- Compliance is reviewed during planning (Constitution Check) and during analysis; constitution violations are treated as CRITICAL and MUST be resolved by changing the spec, plan, or implementation—not by weakening the principle without a formal amendment.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-02-24 | **Last Amended**: 2025-02-24
