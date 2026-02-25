@@ -6,12 +6,14 @@ type AppState = {
   rootPath: string | null;
   filePaths: string[];
   selectedPath: string | null;
+  editorContent: string;
 };
 
 const state: AppState = {
   rootPath: null,
   filePaths: [],
   selectedPath: null,
+  editorContent: "",
 };
 
 function getEl<T extends HTMLElement>(id: string): T {
@@ -39,24 +41,114 @@ function renderFileTree() {
     a.className = state.selectedPath === path ? "selected" : "";
     a.addEventListener("click", (e) => {
       e.preventDefault();
-      state.selectedPath = path;
-      renderFileTree();
-      renderEditor();
+      selectFile(path);
     });
     li.appendChild(a);
     list.appendChild(li);
   }
 }
 
+async function selectFile(path: string) {
+  state.selectedPath = path;
+  renderFileTree();
+  try {
+    const content = await invoke<string>("read_file", { path });
+    state.editorContent = content ?? "";
+  } catch (err) {
+    state.editorContent = "";
+    console.error(err);
+  }
+  renderEditor();
+  await invoke("save_session", { last_file_path: path });
+}
+
 function renderEditor() {
   const editorArea = getEl<HTMLDivElement>("editor-area");
   editorArea.innerHTML = "";
-  const p = document.createElement("p");
-  p.className = "placeholder";
-  p.textContent = state.selectedPath
-    ? "Select a file or open a vault to get started."
-    : "Open a vault to get started.";
-  editorArea.appendChild(p);
+  if (!state.selectedPath) {
+    const p = document.createElement("p");
+    p.className = "placeholder";
+    p.textContent = "Select a file or open a vault to get started.";
+    editorArea.appendChild(p);
+    return;
+  }
+  const toolbar = document.createElement("div");
+  toolbar.className = "editor-toolbar";
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.textContent = "Save";
+  saveBtn.addEventListener("click", saveFile);
+  toolbar.appendChild(saveBtn);
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.textContent = "Delete file";
+  deleteBtn.className = "danger";
+  deleteBtn.addEventListener("click", deleteCurrentFile);
+  toolbar.appendChild(deleteBtn);
+  editorArea.appendChild(toolbar);
+  const textarea = document.createElement("textarea");
+  textarea.id = "editor-text";
+  textarea.className = "editor-text";
+  textarea.value = state.editorContent;
+  textarea.placeholder = "Markdown content...";
+  textarea.addEventListener("input", () => {
+    state.editorContent = textarea.value;
+  });
+  editorArea.appendChild(textarea);
+}
+
+async function saveFile() {
+  if (!state.selectedPath) return;
+  try {
+    await invoke("write_file", {
+      path: state.selectedPath,
+      content: state.editorContent,
+    });
+  } catch (err) {
+    console.error(err);
+    alert(String(err));
+  }
+}
+
+async function deleteCurrentFile() {
+  if (!state.selectedPath) return;
+  if (!confirm(`Delete "${state.selectedPath}"?`)) return;
+  try {
+    await invoke("delete_file", { path: state.selectedPath });
+    state.selectedPath = null;
+    state.editorContent = "";
+    await refreshFileList();
+    renderFileTree();
+    renderEditor();
+  } catch (err) {
+    console.error(err);
+    alert(String(err));
+  }
+}
+
+async function refreshFileList() {
+  try {
+    const paths = await invoke<string[]>("list_files");
+    state.filePaths = paths ?? [];
+  } catch {
+    state.filePaths = [];
+  }
+}
+
+async function createFile() {
+  const name = window.prompt("File name (e.g. note.md):");
+  if (!name || !name.trim()) return;
+  let path = name.trim();
+  if (!path.endsWith(".md")) path += ".md";
+  try {
+    await invoke("create_file", { path });
+    await refreshFileList();
+    renderFileTree();
+    selectFile(path);
+  } catch (err) {
+    console.error(err);
+    alert(String(err));
+  }
 }
 
 async function openVault() {
@@ -72,6 +164,7 @@ async function openVault() {
     state.rootPath = result.root_path;
     state.filePaths = result.file_paths;
     state.selectedPath = null;
+    state.editorContent = "";
     await invoke("save_session", {
       last_vault_path: result.root_path,
     });
@@ -98,6 +191,8 @@ async function loadSession() {
         state.filePaths = result.file_paths;
         if (session.last_file_path && state.filePaths.includes(session.last_file_path)) {
           state.selectedPath = session.last_file_path;
+          const content = await invoke<string>("read_file", { path: session.last_file_path });
+          state.editorContent = content ?? "";
         }
       } catch {
         // vault path invalid
@@ -112,9 +207,17 @@ async function loadSession() {
 
 function setupUi() {
   getEl<HTMLButtonElement>("open-vault-btn").addEventListener("click", openVault);
+  getEl<HTMLButtonElement>("create-file-btn").addEventListener("click", createFile);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   setupUi();
   loadSession();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    saveFile();
+  }
 });
