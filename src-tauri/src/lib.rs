@@ -4,6 +4,7 @@
 )]
 
 mod commands;
+mod markdown;
 
 use commands::VaultState;
 use std::sync::Mutex;
