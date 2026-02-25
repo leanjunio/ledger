@@ -1,0 +1,11 @@
+{
+  "identifier": "default",
+  "description": "Main window capability",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:default",
+    "fs:default",
+    "path:default"
+  ]
+}

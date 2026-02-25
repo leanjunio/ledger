@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+target/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs and env
+*.log
+.env
+.env.*
+!.env.example
+
+# IDE and OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# Rust (keep Cargo.lock for consistent builds)
+*.rs.bk
+*.rlib
+*.prof*
+
+# TypeScript/JavaScript
+*.tsbuildinfo
+coverage/
+
+# Universal
+*.min.js

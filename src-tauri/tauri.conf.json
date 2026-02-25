@@ -1,0 +1,30 @@
+{
+  "productName": "Ledger",
+  "version": "0.1.0",
+  "identifier": "com.ledger.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Ledger"
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [],
+    "resources": [],
+    "externalBin": [],
+    "copyright": "",
+    "category": "DeveloperTool",
+    "shortDescription": "Developer Ledger MVP",
+    "longDescription": "Markdown vault with file tree, list hierarchy, tags, and search."
+  },
+  "plugins": {}
+}
