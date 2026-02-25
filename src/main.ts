@@ -257,9 +257,85 @@ async function loadSession() {
   renderEditor();
 }
 
+type QueryResultItem = {
+  file_path: string;
+  parent_path: string | null;
+  node: TreeNode;
+};
+
+async function runQuery() {
+  const tag = (getEl<HTMLInputElement>("query-input").value || "").trim();
+  if (!tag) return;
+  try {
+    const items = await invoke<QueryResultItem[]>("query_by_tag", {
+      tag_names: [tag],
+    });
+    showResults(
+      "Query: #" + tag,
+      items.map((item) => ({
+        filePath: item.file_path,
+        label: `${item.file_path}${item.parent_path ? " · " + item.parent_path : ""}: ${item.node.text.slice(0, 50)}...`,
+      })),
+    );
+  } catch (err) {
+    console.error(err);
+    alert(String(err));
+  }
+}
+
+type SearchMatchItem = {
+  file_path: string;
+  snippet_or_line: string;
+};
+
+async function runSearch() {
+  const q = (getEl<HTMLInputElement>("search-input").value || "").trim();
+  if (!q) return;
+  try {
+    const matches = await invoke<SearchMatchItem[]>("search_full_text", {
+      query: q,
+      fuzzy: false,
+    });
+    showResults(
+      "Search: " + q,
+      matches.map((m) => ({
+        filePath: m.file_path,
+        label: m.file_path + ": " + m.snippet_or_line.slice(0, 60) + (m.snippet_or_line.length > 60 ? "..." : ""),
+      })),
+    );
+  } catch (err) {
+    console.error(err);
+    alert(String(err));
+  }
+}
+
+function showResults(title: string, entries: { filePath: string; label: string }[]) {
+  const panel = getEl<HTMLDivElement>("results-panel");
+  const titleEl = getEl<HTMLSpanElement>("results-title");
+  const list = getEl<HTMLUListElement>("results-list");
+  titleEl.textContent = title;
+  list.innerHTML = "";
+  for (const e of entries) {
+    const li = document.createElement("li");
+    li.textContent = e.label;
+    li.dataset.path = e.filePath;
+    li.addEventListener("click", () => {
+      selectFile(e.filePath);
+      panel.classList.add("hidden");
+    });
+    list.appendChild(li);
+  }
+  panel.classList.remove("hidden");
+}
+
 function setupUi() {
   getEl<HTMLButtonElement>("open-vault-btn").addEventListener("click", openVault);
   getEl<HTMLButtonElement>("create-file-btn").addEventListener("click", createFile);
+  getEl<HTMLButtonElement>("query-btn").addEventListener("click", runQuery);
+  getEl<HTMLButtonElement>("search-btn").addEventListener("click", runSearch);
+  getEl<HTMLButtonElement>("close-results").addEventListener("click", () => {
+    getEl<HTMLDivElement>("results-panel").classList.add("hidden");
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
