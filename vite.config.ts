@@ -1,15 +1,10 @@
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  clearScreen: false,
-  server: {
-    port: 5173,
-    strictPort: true,
-  },
-  envPrefix: ["VITE_", "TAURI_"],
+  plugins: [react()],
   build: {
-    target: ["es2020"],
-    minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
-    sourcemap: !!process.env.TAURI_DEBUG,
+    outDir: "dist",
+    target: "ES2020",
   },
 });

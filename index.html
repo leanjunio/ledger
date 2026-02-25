@@ -6,36 +6,7 @@
     <title>Ledger</title>
   </head>
   <body>
-    <div id="app">
-      <header class="toolbar">
-        <button type="button" id="open-vault-btn">Open vault</button>
-        <button type="button" id="create-file-btn">Create file</button>
-        <span class="toolbar-gap"></span>
-        <label>Tag query: <input type="text" id="query-input" placeholder="e.g. decision" /></label>
-        <button type="button" id="query-btn">Query</button>
-        <label>Search: <input type="text" id="search-input" placeholder="full text" /></label>
-        <button type="button" id="search-btn">Search</button>
-        <label>Theme: <select id="theme-select"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
-      </header>
-      <div class="layout">
-        <aside id="sidebar" class="sidebar">
-          <ul id="file-list" class="file-list"></ul>
-        </aside>
-        <div class="main-pane">
-          <aside id="outline" class="outline"></aside>
-          <main id="editor-area" class="editor-area">
-            <p class="placeholder">Open a vault to get started.</p>
-          </main>
-          <aside id="results-panel" class="results-panel hidden">
-            <div class="results-header">
-              <span id="results-title">Results</span>
-              <button type="button" id="close-results">×</button>
-            </div>
-            <ul id="results-list"></ul>
-          </aside>
-        </div>
-      </div>
-    </div>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
