@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invoke } from '@tauri-apps/api/core';
 	import { rootPath, tree } from '$lib/stores/app';
+	import { Button } from '$lib/components/ui/button';
 
 	async function openFolder() {
 		try {
@@ -25,37 +26,14 @@
 	}
 </script>
 
-<div class="topbar">
-	<button type="button" onclick={openFolder}>Open folder</button>
+<div class="flex h-full items-center gap-4 border-b bg-background">
+	<Button type="button" onclick={openFolder}>Open folder</Button>
 	{#if $rootPath}
-		<span class="root-path" title={$rootPath}>{truncatedPath($rootPath)}</span>
+		<span
+			class="max-w-80 truncate text-muted-foreground"
+			title={$rootPath}
+		>
+			{truncatedPath($rootPath)}
+		</span>
 	{/if}
 </div>
-
-<style>
-	.topbar {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		height: 100%;
-	}
-	button {
-		padding: 0.35rem 0.75rem;
-		cursor: pointer;
-		border: 1px solid #888;
-		border-radius: 4px;
-		background: #fff;
-		font-size: 0.9rem;
-	}
-	button:hover {
-		background: #f0f0f0;
-	}
-	.root-path {
-		font-size: 0.85rem;
-		color: #666;
-		max-width: 20rem;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-</style>
