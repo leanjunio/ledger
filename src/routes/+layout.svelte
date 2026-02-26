@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
 	import { rootPath, tree } from '$lib/stores/app';
+	import TopBar from '$lib/components/TopBar.svelte';
 
 	onMount(async () => {
 		const saved = await invoke<string | null>('get_saved_root');
@@ -20,8 +21,8 @@
 	});
 </script>
 
-<header class="topbar">
-	<!-- Top bar placeholder -->
+<header class="topbar-wrap">
+	<TopBar />
 </header>
 <div class="app-body">
 	<aside class="sidebar">
@@ -37,7 +38,7 @@
 		margin: 0;
 		font-family: system-ui, sans-serif;
 	}
-	.topbar {
+	.topbar-wrap {
 		height: 2.5rem;
 		border-bottom: 1px solid #ccc;
 		display: flex;
