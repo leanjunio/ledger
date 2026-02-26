@@ -3,6 +3,7 @@
 	import { invoke } from '@tauri-apps/api/core';
 	import { rootPath, tree } from '$lib/stores/app';
 	import TopBar from '$lib/components/TopBar.svelte';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	onMount(async () => {
 		const saved = await invoke<string | null>('get_saved_root');
@@ -26,7 +27,7 @@
 </header>
 <div class="app-body">
 	<aside class="sidebar">
-		<!-- Sidebar placeholder -->
+		<Sidebar />
 	</aside>
 	<main class="main">
 		<slot />
