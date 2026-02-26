@@ -9,6 +9,11 @@
 		editorContent
 	} from '$lib/stores/app';
 	import { Button } from '$lib/components/ui/button';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { buttonVariants } from '$lib/components/ui/button';
+
+	let deleteDialogOpen = $state(false);
+	let pathToDelete = $state<string | null>(null);
 
 	async function openFile(entry: FileEntry) {
 		const root = $rootPath;
@@ -42,10 +47,15 @@
 		}
 	}
 
-	async function deleteFile(path: string) {
-		if (!confirm('Delete this file?')) return;
+	function openDeleteDialog(path: string) {
+		pathToDelete = path;
+		deleteDialogOpen = true;
+	}
+
+	async function doDelete() {
+		const path = pathToDelete;
 		const root = $rootPath;
-		if (!root) return;
+		if (!path || !root) return;
 		try {
 			await invoke('delete_file', { path, root });
 			if ($currentFilePath === path) {
@@ -62,6 +72,9 @@
 			}
 		} catch (e) {
 			console.error('Delete file failed', e);
+		} finally {
+			pathToDelete = null;
+			deleteDialogOpen = false;
 		}
 	}
 </script>
@@ -88,7 +101,7 @@
 					title="Delete"
 					type="button"
 					data-testid="delete-file-btn"
-					onclick={(e) => { e.stopPropagation(); deleteFile(entry.path); }}
+					onclick={(e) => { e.stopPropagation(); openDeleteDialog(entry.path); }}
 				>
 					✕
 				</Button>
@@ -96,3 +109,19 @@
 		{/each}
 	</ul>
 </div>
+
+<AlertDialog.Root bind:open={deleteDialogOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Title>Delete file?</AlertDialog.Title>
+		<AlertDialog.Description>This cannot be undone.</AlertDialog.Description>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action
+				class={buttonVariants({ variant: 'destructive' })}
+				onclick={doDelete}
+			>
+				Delete
+			</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
