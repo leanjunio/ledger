@@ -30,14 +30,14 @@
 	});
 </script>
 
-<header class="topbar-wrap">
+<header class="topbar-wrap bg-background border-b border-border">
 	<TopBar />
 </header>
 <div class="app-body">
-	<aside class="sidebar">
+	<aside class="sidebar bg-muted border-r border-border">
 		<Sidebar />
 	</aside>
-	<main class="main">
+	<main class="main bg-background">
 		<slot />
 	</main>
 </div>
@@ -49,7 +49,6 @@
 	}
 	.topbar-wrap {
 		height: 2.5rem;
-		border-bottom: 1px solid #ccc;
 		display: flex;
 		align-items: center;
 		padding: 0 0.5rem;
@@ -60,7 +59,6 @@
 	}
 	.sidebar {
 		width: 12rem;
-		border-right: 1px solid #ccc;
 		overflow: auto;
 	}
 	.main {
