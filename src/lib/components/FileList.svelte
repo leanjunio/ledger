@@ -8,6 +8,7 @@
 		currentFilePath,
 		editorContent
 	} from '$lib/stores/app';
+	import { Button } from '$lib/components/ui/button';
 
 	async function openFile(entry: FileEntry) {
 		const root = $rootPath;
@@ -65,89 +66,31 @@
 	}
 </script>
 
-<div class="file-list">
-	<div class="toolbar">
-		<button type="button" onclick={newFile}>New file</button>
+<div class="flex flex-col h-full bg-background border border-border rounded-md overflow-hidden">
+	<div class="mb-2">
+		<Button type="button" onclick={newFile}>New file</Button>
 	</div>
-	<ul class="files">
+	<ul class="list-none m-0 p-0 flex flex-col gap-0.5">
 		{#each $fileList as entry (entry.path)}
-			<li class="file-row">
+			<li class="flex items-center gap-1">
 				<button
 					type="button"
-					class="file-name"
-					class:selected={$currentFilePath === entry.path}
+					class="flex-1 text-left px-2 py-1.5 text-sm rounded hover:bg-accent text-foreground border-0 bg-transparent cursor-pointer min-w-0"
+					class:bg-accent={$currentFilePath === entry.path}
 					onclick={() => openFile(entry)}
 				>
 					{entry.name}
 				</button>
-				<button
-					type="button"
-					class="delete-btn"
+				<Button
+					variant="ghost"
+					size="icon"
 					title="Delete"
+					type="button"
 					onclick={(e) => { e.stopPropagation(); deleteFile(entry.path); }}
 				>
 					✕
-				</button>
+				</Button>
 			</li>
 		{/each}
 	</ul>
 </div>
-
-<style>
-	.file-list {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
-	.toolbar {
-		margin-bottom: 0.5rem;
-	}
-	.toolbar button {
-		padding: 0.35rem 0.75rem;
-		cursor: pointer;
-		border: 1px solid #888;
-		border-radius: 4px;
-		background: #fff;
-		font-size: 0.9rem;
-	}
-	.files {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	.file-row {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		margin-bottom: 0.15rem;
-	}
-	.file-name {
-		flex: 1;
-		text-align: left;
-		padding: 0.35rem 0.5rem;
-		border: none;
-		background: none;
-		cursor: pointer;
-		font-size: 0.9rem;
-		border-radius: 4px;
-	}
-	.file-name:hover {
-		background: #eee;
-	}
-	.file-name.selected {
-		background: #d0e0ff;
-	}
-	.delete-btn {
-		padding: 0.2rem 0.4rem;
-		border: none;
-		background: none;
-		cursor: pointer;
-		color: #888;
-		font-size: 0.85rem;
-		border-radius: 4px;
-	}
-	.delete-btn:hover {
-		background: #fcc;
-		color: #c00;
-	}
-</style>
