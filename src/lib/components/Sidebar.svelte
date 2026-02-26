@@ -39,8 +39,8 @@
 	{@const isExpanded = expanded.has(n.path)}
 	{@const hasChildren = n.children.length > 0}
 	<div
-		class="tree-row"
-		class:selected={$selectedFolderPath === n.path}
+		class="tree-row flex items-center gap-1 py-1 px-2 cursor-pointer text-[0.9rem] rounded hover:bg-accent"
+		class:bg-accent={$selectedFolderPath === n.path}
 		style="padding-left: {depth * 0.75 + 0.5}rem"
 		role="button"
 		tabindex="0"
@@ -50,16 +50,16 @@
 		{#if hasChildren}
 			<button
 				type="button"
-				class="expand-btn"
+				class="expand-btn w-5 p-0 border-0 bg-transparent cursor-pointer text-muted-foreground hover:bg-accent rounded shrink-0 text-[0.6rem]"
 				aria-expanded={isExpanded}
 				onclick={(e) => { e.stopPropagation(); toggle(n.path); }}
 			>
 				{isExpanded ? '▼' : '▶'}
 			</button>
 		{:else}
-			<span class="expand-placeholder"></span>
+			<span class="expand-placeholder w-5 inline-block shrink-0"></span>
 		{/if}
-		<span class="node-name">{n.name || '(unnamed)'}</span>
+		<span class="node-name overflow-hidden text-ellipsis whitespace-nowrap">{n.name || '(unnamed)'}</span>
 	</div>
 	{#if hasChildren && isExpanded}
 		{#each n.children as child (child.path)}
@@ -69,49 +69,9 @@
 {/snippet}
 
 {#if $rootPath}
-	<nav class="sidebar-tree">
+	<nav class="sidebar-tree py-1 bg-muted/30 border-r border-border">
 		{#each $tree as node (node.path)}
 			{@render treeNode(node, 0)}
 		{/each}
 	</nav>
 {/if}
-
-<style>
-	.sidebar-tree {
-		padding: 0.25rem 0;
-	}
-	.tree-row {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 0.25rem 0.5rem;
-		cursor: pointer;
-		font-size: 0.9rem;
-		border-radius: 4px;
-	}
-	.tree-row:hover {
-		background: #eee;
-	}
-	.tree-row.selected {
-		background: #d0e0ff;
-	}
-	.expand-btn {
-		width: 1.25rem;
-		padding: 0;
-		border: none;
-		background: none;
-		cursor: pointer;
-		font-size: 0.6rem;
-		flex-shrink: 0;
-	}
-	.expand-placeholder {
-		width: 1.25rem;
-		display: inline-block;
-		flex-shrink: 0;
-	}
-	.node-name {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-</style>
