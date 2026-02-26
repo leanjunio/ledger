@@ -17,7 +17,7 @@ describe('Create new file', () => {
     await newBtn.waitForDisplayed({ timeout: 5000 });
     await newBtn.click();
     await browser.pause(500);
-    const fileNames = await $$('[data-testid="file-name"]');
+    const fileNames = await $$('[data-testid="file-list"] [data-testid="file-name"]');
     const texts = await Promise.all(fileNames.map((el) => el.getText()));
     expect(texts.some((t) => t.includes('untitled.md'))).toBe(true);
   });
