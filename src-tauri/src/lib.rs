@@ -35,6 +35,12 @@ fn set_saved_root(app: tauri::AppHandle, path: String) -> Result<(), String> {
     write_root_path_to_dir(&dir, &path)
 }
 
+/// Returns MARKDOWN_APP_ROOT env var if set (for E2E tests). Enables injecting root without folder picker.
+#[tauri::command]
+fn get_test_root() -> Option<String> {
+    std::env::var("MARKDOWN_APP_ROOT").ok()
+}
+
 /// Opens a native folder picker. Returns the selected path or None if cancelled.
 #[tauri::command]
 fn open_folder_dialog() -> Result<Option<String>, String> {
@@ -72,6 +78,7 @@ pub fn run() {
             greet,
             get_saved_root,
             set_saved_root,
+            get_test_root,
             open_folder_dialog,
             commands::list_directory_tree,
             commands::list_markdown_files,

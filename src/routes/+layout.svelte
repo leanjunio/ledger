@@ -6,7 +6,14 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	onMount(async () => {
-		const saved = await invoke<string | null>('get_saved_root');
+		let saved = await invoke<string | null>('get_saved_root');
+		if (!saved) {
+			const testRoot = await invoke<string | null>('get_test_root');
+			if (testRoot) {
+				await invoke('set_saved_root', { path: testRoot });
+				saved = testRoot;
+			}
+		}
 		if (saved) {
 			rootPath.set(saved);
 			try {
