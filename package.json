@@ -19,6 +19,7 @@
     "marked": "^17.0.3"
   },
   "devDependencies": {
+    "@internationalized/date": "^3.11.0",
     "@lucide/svelte": "^0.575.0",
     "@sveltejs/adapter-static": "^3.0.6",
     "@sveltejs/kit": "^2.9.0",
@@ -29,6 +30,7 @@
     "@wdio/local-runner": "^9.19.0",
     "@wdio/mocha-framework": "^9.19.0",
     "@wdio/spec-reporter": "^9.19.0",
+    "bits-ui": "^2.16.2",
     "clsx": "^2.1.1",
     "shadcn": "^3.8.5",
     "svelte": "^5.0.0",
