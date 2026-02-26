@@ -1,3 +1,4 @@
+mod commands;
 mod path_utils;
 
 use std::path::Path;
@@ -63,7 +64,10 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             get_saved_root,
-            set_saved_root
+            set_saved_root,
+            commands::list_directory_tree,
+            commands::list_markdown_files,
+            commands::read_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
