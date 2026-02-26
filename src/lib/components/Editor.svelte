@@ -10,20 +10,30 @@
 		selectedFolderPath
 	} from '$lib/stores/app';
 	import type { FileEntry } from '$lib/stores/app';
+	import { Button } from '$lib/components/ui/button';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import {
+		AlertDialog,
+		AlertDialogAction,
+		AlertDialogCancel,
+		AlertDialogContent,
+		AlertDialogDescription,
+		AlertDialogFooter,
+		AlertDialogHeader,
+		AlertDialogTitle
+	} from '$lib/components/ui/alert-dialog';
+	import { buttonVariants } from '$lib/components/ui/button';
 
 	let localContent = $state($editorContent);
+	let deleteDialogOpen = $state(false);
 
 	$effect(() => {
 		localContent = $editorContent;
 	});
 
-	function onInput(e: Event) {
-		const t = (e.target as HTMLTextAreaElement);
-		if (t) {
-			localContent = t.value;
-			editorContent.set(localContent);
-			dirty.set(true);
-		}
+	function onInput() {
+		editorContent.set(localContent);
+		dirty.set(true);
 	}
 
 	function renderedHtml(): string {
@@ -48,8 +58,7 @@
 		dirty.set(false);
 	}
 
-	async function deleteCurrent() {
-		if (!confirm('Delete this file?')) return;
+	async function doDelete() {
 		const path = $currentFilePath;
 		const root = $rootPath;
 		const folder = $selectedFolderPath;
@@ -70,29 +79,52 @@
 			console.error('Delete failed', e);
 		}
 	}
+
+	async function handleConfirmDelete() {
+		await doDelete();
+		deleteDialogOpen = false;
+	}
 </script>
 
 <div class="editor-container">
 	<div class="toolbar">
-		<button type="button" onclick={back}>Back</button>
-		<button type="button" onclick={save} disabled={!$dirty}>Save</button>
-		<button type="button" onclick={deleteCurrent}>Delete</button>
+		<Button variant="outline" onclick={back}>Back</Button>
+		<Button variant="default" onclick={save} disabled={!$dirty}>Save</Button>
+		<Button variant="destructive" onclick={() => (deleteDialogOpen = true)}>Delete</Button>
 	</div>
 	<div class="editor-split">
-		<textarea
+		<Textarea
 			class="editor-textarea"
-			value={localContent}
+			bind:value={localContent}
 			oninput={onInput}
 			placeholder="Write markdown..."
 			spellcheck="true"
-		></textarea>
-		<div class="preview-pane">
-			<div class="preview-content">
+		/>
+		<div class="preview-pane rounded-md border border-border overflow-auto bg-muted/30">
+			<div class="preview-content p-3 text-foreground text-sm leading-relaxed">
 				{@html renderedHtml()}
 			</div>
 		</div>
 	</div>
 </div>
+
+<AlertDialog bind:open={deleteDialogOpen}>
+	<AlertDialogContent>
+		<AlertDialogHeader>
+			<AlertDialogTitle>Delete file?</AlertDialogTitle>
+			<AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+		</AlertDialogHeader>
+		<AlertDialogFooter>
+			<AlertDialogCancel>Cancel</AlertDialogCancel>
+			<AlertDialogAction
+				class={buttonVariants({ variant: 'destructive' })}
+				onclick={handleConfirmDelete}
+			>
+				Delete
+			</AlertDialogAction>
+		</AlertDialogFooter>
+	</AlertDialogContent>
+</AlertDialog>
 
 <style>
 	.editor-container {
@@ -106,18 +138,6 @@
 		gap: 0.5rem;
 		margin-bottom: 0.5rem;
 	}
-	.toolbar button {
-		padding: 0.35rem 0.75rem;
-		cursor: pointer;
-		border: 1px solid #888;
-		border-radius: 4px;
-		background: #fff;
-		font-size: 0.9rem;
-	}
-	.toolbar button:disabled {
-		opacity: 0.6;
-		cursor: default;
-	}
 	.editor-split {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -125,45 +145,37 @@
 		flex: 1;
 		min-height: 0;
 	}
-	.editor-textarea {
+	:global(.editor-textarea) {
 		width: 100%;
 		height: 100%;
 		min-height: 200px;
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		font-family: ui-monospace, monospace;
-		font-size: 0.9rem;
 		resize: none;
 		box-sizing: border-box;
-	}
-	.preview-pane {
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		overflow: auto;
-		background: #fafafa;
-	}
-	.preview-content {
-		padding: 0.75rem;
-		font-size: 0.9rem;
-		line-height: 1.5;
+		font-family: ui-monospace, monospace;
 	}
 	.preview-content :global(h1) {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
+		font-weight: 600;
 		margin-top: 0;
+		margin-bottom: 0.5rem;
 	}
 	.preview-content :global(h2) {
-		font-size: 1.25rem;
+		font-size: 1.125rem;
+		font-weight: 500;
+		margin-top: 1rem;
+		margin-bottom: 0.25rem;
 	}
 	.preview-content :global(pre) {
-		background: #eee;
-		padding: 0.5rem;
+		background: var(--muted);
+		padding: 0.75rem;
 		overflow: auto;
-		border-radius: 4px;
+		border-radius: var(--radius-md);
+		margin: 0.5rem 0;
 	}
 	.preview-content :global(code) {
-		background: #eee;
-		padding: 0.1em 0.3em;
-		border-radius: 3px;
+		background: var(--muted);
+		padding: 0.125rem 0.375rem;
+		border-radius: 0.25rem;
+		font-size: 0.875em;
 	}
 </style>
