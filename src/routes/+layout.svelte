@@ -1,4 +1,5 @@
 <script lang="ts">
+	import './layout.css';
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
 	import { rootPath, tree } from '$lib/stores/app';
