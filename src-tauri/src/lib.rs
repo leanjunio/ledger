@@ -35,6 +35,13 @@ fn set_saved_root(app: tauri::AppHandle, path: String) -> Result<(), String> {
     write_root_path_to_dir(&dir, &path)
 }
 
+/// Opens a native folder picker. Returns the selected path or None if cancelled.
+#[tauri::command]
+fn open_folder_dialog() -> Result<Option<String>, String> {
+    let folder = rfd::FileDialog::new().pick_folder();
+    Ok(folder.and_then(|p| p.to_str().map(String::from)))
+}
+
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -65,6 +72,7 @@ pub fn run() {
             greet,
             get_saved_root,
             set_saved_root,
+            open_folder_dialog,
             commands::list_directory_tree,
             commands::list_markdown_files,
             commands::read_file,
