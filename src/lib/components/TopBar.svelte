@@ -27,7 +27,7 @@
 </script>
 
 <div class="flex h-full items-center gap-4 border-b bg-background">
-	<Button type="button" onclick={openFolder}>Open folder</Button>
+	<Button type="button" data-testid="open-folder-button" onclick={openFolder}>Open folder</Button>
 	{#if $rootPath}
 		<span
 			class="max-w-80 truncate text-muted-foreground"

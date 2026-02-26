@@ -1,10 +1,10 @@
 describe('Select folder and see file list', () => {
   it('clicking a folder shows file list with .md files', async () => {
-    const treeRow = await $('nav.sidebar-tree .tree-row');
+    const treeRow = await $('[data-testid="sidebar-tree"] [data-testid="tree-row"]');
     await treeRow.waitForDisplayed({ timeout: 5000 });
     await treeRow.click();
     await browser.pause(500);
-    const fileRows = await $$('.file-list .file-name');
+    const fileRows = await $$('[data-testid="file-list"] [data-testid="file-name"]');
     expect(fileRows.length).toBeGreaterThanOrEqual(1);
     const firstFile = await fileRows[0].getText();
     expect(firstFile).toMatch(/\.md$/);
@@ -13,11 +13,11 @@ describe('Select folder and see file list', () => {
 
 describe('Create new file', () => {
   it('New file adds untitled.md to list', async () => {
-    const newBtn = await $('button*=New file');
+    const newBtn = await $('[data-testid="new-file-button"]');
     await newBtn.waitForDisplayed({ timeout: 5000 });
     await newBtn.click();
     await browser.pause(500);
-    const fileNames = await $$('.file-name');
+    const fileNames = await $$('[data-testid="file-name"]');
     const texts = await Promise.all(fileNames.map((el) => el.getText()));
     expect(texts.some((t) => t.includes('untitled.md'))).toBe(true);
   });
@@ -25,7 +25,7 @@ describe('Create new file', () => {
 
 describe('Open file and editor', () => {
   it('clicking a file shows editor and preview', async () => {
-    const fileRow = await $('.file-list .file-name');
+    const fileRow = await $('[data-testid="file-list"] [data-testid="file-name"]');
     await fileRow.waitForDisplayed({ timeout: 5000 });
     await fileRow.click();
     await browser.pause(500);
@@ -58,7 +58,7 @@ describe('Delete file', () => {
     await backBtn.waitForDisplayed({ timeout: 5000 });
     await backBtn.click();
     await browser.pause(500);
-    const deleteBtns = await $$('.delete-btn');
+    const deleteBtns = await $$('[data-testid="delete-file-btn"]');
     expect(deleteBtns.length).toBeGreaterThanOrEqual(1);
   });
 });

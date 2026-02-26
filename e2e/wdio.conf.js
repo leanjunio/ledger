@@ -59,7 +59,7 @@ export const config = {
   onPrepare: () => {
     spawnSync(
       'npm',
-      ['run', 'tauri', 'build', '--', '--debug', '--no-bundle'],
+      ['run', 'tauri', 'build', '--', '--debug', '--no-bundle', '--ci'],
       {
         cwd: projectRoot,
         stdio: 'inherit',

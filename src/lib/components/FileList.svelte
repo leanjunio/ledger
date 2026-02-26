@@ -68,13 +68,14 @@
 
 <div class="flex flex-col h-full bg-background border border-border rounded-md overflow-hidden">
 	<div class="mb-2">
-		<Button type="button" onclick={newFile}>New file</Button>
+		<Button type="button" data-testid="new-file-button" onclick={newFile}>New file</Button>
 	</div>
-	<ul class="list-none m-0 p-0 flex flex-col gap-0.5">
+	<ul class="list-none m-0 p-0 flex flex-col gap-0.5" data-testid="file-list">
 		{#each $fileList as entry (entry.path)}
 			<li class="flex items-center gap-1">
 				<button
 					type="button"
+					data-testid="file-name"
 					class="flex-1 text-left px-2 py-1.5 text-sm rounded hover:bg-accent text-foreground border-0 bg-transparent cursor-pointer min-w-0"
 					class:bg-accent={$currentFilePath === entry.path}
 					onclick={() => openFile(entry)}
@@ -86,6 +87,7 @@
 					size="icon"
 					title="Delete"
 					type="button"
+					data-testid="delete-file-btn"
 					onclick={(e) => { e.stopPropagation(); deleteFile(entry.path); }}
 				>
 					✕

@@ -40,6 +40,7 @@
 	{@const hasChildren = n.children.length > 0}
 	<div
 		class="tree-row flex items-center gap-1 py-1 px-2 cursor-pointer text-[0.9rem] rounded hover:bg-accent"
+		data-testid="tree-row"
 		class:bg-accent={$selectedFolderPath === n.path}
 		style="padding-left: {depth * 0.75 + 0.5}rem"
 		role="button"
@@ -69,7 +70,7 @@
 {/snippet}
 
 {#if $rootPath}
-	<nav class="sidebar-tree py-1 bg-muted/30 border-r border-border">
+	<nav class="sidebar-tree py-1 bg-muted/30 border-r border-border" data-testid="sidebar-tree">
 		{#each $tree as node (node.path)}
 			{@render treeNode(node, 0)}
 		{/each}
